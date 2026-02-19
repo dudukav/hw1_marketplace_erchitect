@@ -1,0 +1,11 @@
+@startuml deployment
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+
+Node(devMachine, "Разработчик / Локальная машина") {
+    Container(userServiceContainer, "User Service", "REST API", "Docker контейнер, поднимает User Service") 
+    Container(dbContainer, "User DB", "SQLite / PostgreSQL", "База данных для User Service") 
+}
+
+Rel(userServiceContainer, dbContainer, "Читает/пишет данные через JDBC/SQL")
+Rel(devMachine, userServiceContainer, "HTTP REST", "API Gateway или тестовый клиент")
+@enduml

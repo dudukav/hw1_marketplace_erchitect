@@ -1,0 +1,17 @@
+@startuml context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(buyer, "Покупатель", "Покупает товары на маркетплейсе") 
+Person(seller, "Продавец", "Размещает и управляет товарами")
+
+System(marketplace, "Маркетплейс", "Платформа для продажи товаров онлайн")
+
+System_Ext(payment, "Платёжная система", "Обработка платежей")
+System_Ext(notification, "Email/SMS сервис", "Отправка уведомлений о заказах") 
+
+Rel(buyer, marketplace, "Просматривает товары и оформляет заказы")
+Rel(seller, marketplace, "Управляет каталогом товаров")
+Rel(marketplace, payment, "Обрабатывает платежи")
+Rel(marketplace, notification, "Отправляет уведомления о статусах заказов")
+
+@enduml

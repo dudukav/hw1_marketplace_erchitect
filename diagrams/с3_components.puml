@@ -1,0 +1,15 @@
+@startuml component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container(userService, "User Service", "REST API + DB", "Управление пользователями")
+
+Component(controller, "REST Controller", "HTTP REST", "Принимает запросы от API Gateway")
+Component(serviceLayer, "User Manager / Service Layer", "Golang service", "Бизнес-логика CRUD пользователей")
+Component(repository, "Repository / DAO", "SQLite / in-memory DB", "Хранение данных пользователей")
+Component(eventPublisher, "Event Publisher", "Event/Message", "Публикует события UserCreated (опционально)")
+
+Rel(controller, serviceLayer, "Вызывает методы бизнес-логики")
+Rel(serviceLayer, repository, "Читает/пишет данные пользователей")
+Rel(serviceLayer, eventPublisher, "Публикует события пользователей")
+
+@enduml
