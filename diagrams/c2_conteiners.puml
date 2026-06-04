@@ -1,0 +1,37 @@
+@startuml container 
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(buyer, "Покупатель", "Покупает товары на маркетплейсе")
+Person(seller, "Продавец", "Размещает и управляет товарами")
+
+System_Boundary(marketplace, "Маркетплейс") {
+    Container(apiGateway, "API Gateway", "REST API", "Точка входа для всех клиентов")
+    Container(userService, "User Service", "REST API + DB", "Управление пользователями")
+    Container(catalogService, "Catalog Service", "REST API + DB", "Управление каталогом товаров")
+    Container(orderService, "Order Service", "REST API + DB", "Создание и обработка заказов")
+    Container(paymentService, "Payment Service", "REST API + DB", "Обработка платежей (предоплата или postpay)")
+    Container(notificationService, "Notification Service", "Event-driven + SMTP/SMS", "Отправка уведомлений о заказах")
+    Container(recommendationService, "Recommendation Service", "Event-driven + ML", "Персонализированная лента товаров")
+    Container(messageBroker, "Message Broker", "Kafka/RabbitMQ", "Асинхронный обмен событиями между сервисами")
+}
+
+System_Ext(paymentGateway, "Платёжная система", "Обработка платежей")
+System_Ext(notificationChannel, "Email/SMS сервис", "Доставка уведомлений пользователям")
+
+Rel(buyer, apiGateway, "Отправляет запросы")
+Rel(seller, apiGateway, "Отправляет запросы")
+
+Rel(apiGateway, userService, "REST calls")
+Rel(apiGateway, catalogService, "REST calls")
+Rel(apiGateway, orderService, "REST calls")
+
+Rel(orderService, messageBroker, "Публикует события OrderCreated / OrderDelivered")
+Rel(paymentService, messageBroker, "Подписан на OrderDelivered, списывает оплату при postpay")
+Rel(notificationService, messageBroker, "Подписан на OrderCreated / PaymentProcessed")
+
+Rel(paymentService, paymentGateway, "Обрабатывает платежи")
+Rel(notificationService, notificationChannel, "Отправляет уведомления")
+
+Rel(orderService, recommendationService, "Публикует события для персонализации")
+Rel(recommendationService, messageBroker, "Подписка на события")
+@enduml
